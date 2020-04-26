@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.test.nexfar.entity.ProductResponse;
-import com.test.nexfar.entity.Request;
+import com.test.nexfar.entity.SearchProduct;
+import com.test.nexfar.entity.SearchRequest;
 import com.test.nexfar.exception.ProductNotFoundException;
-import com.test.nexfar.service.SearchService;
+import com.test.nexfar.service.SearchServiceImpl;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -22,25 +22,25 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping(path = "/api/product")
 public class ProductController {
 
-	private SearchService searchService;
+	private SearchServiceImpl searchService;
 
 	@Autowired
-	public ProductController(SearchService searchService) {
+	public ProductController(SearchServiceImpl searchService) {
 		this.searchService = searchService;
 	}
 
 	@PostMapping("/search")
 	@ApiOperation(value = "Calculate the tax for the products using clientId and the name of the product")
-	public ResponseEntity<List<ProductResponse>> searchProduct(@RequestHeader("clientId") Integer clientId,
-			@RequestBody Request request) throws ProductNotFoundException {
-		List<ProductResponse> productResponse;
+	public ResponseEntity<List<SearchProduct>> searchProduct(@RequestHeader("clientId") Integer clientId,
+			@RequestBody SearchRequest request) throws ProductNotFoundException {
+		List<SearchProduct> productResponse;
 
 		try {
 			productResponse = searchService.findProducts(clientId, request.getName());
 		} catch (ProductNotFoundException e) {
 			return new ResponseEntity<>(null, null, HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<List<ProductResponse>>(productResponse, HttpStatus.OK);
+		return new ResponseEntity<List<SearchProduct>>(productResponse, HttpStatus.OK);
 
 	}
 }

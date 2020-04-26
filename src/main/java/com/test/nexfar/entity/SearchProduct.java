@@ -1,6 +1,6 @@
 package com.test.nexfar.entity;
 
-public class ProductResponse {
+public class SearchProduct {
 	Integer productId;
 	String name;
 	Double price;
@@ -38,7 +38,7 @@ public class ProductResponse {
 		this.taxes = taxes;
 	}
 
-	public ProductResponse(Integer productId, String name, Double price, Double taxes) {
+	public SearchProduct(Integer productId, String name, Double price, Double taxes) {
 		super();
 		this.productId = productId;
 		this.name = name;
@@ -46,6 +46,6 @@ public class ProductResponse {
 		this.taxes = taxes;
 	}
 
-	public ProductResponse() {
+	public SearchProduct() {
 	}
 }

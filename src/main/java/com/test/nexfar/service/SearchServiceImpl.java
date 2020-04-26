@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.test.nexfar.entity.Product;
-import com.test.nexfar.entity.ProductResponse;
+import com.test.nexfar.entity.SearchProduct;
 import com.test.nexfar.entity.ProductSellingRestrictions;
 import com.test.nexfar.entity.Taxes;
 import com.test.nexfar.exception.ProductNotFoundException;
@@ -17,7 +17,7 @@ import com.test.nexfar.repository.ProductSellingRestrictionsRepository;
 import com.test.nexfar.repository.TaxRepository;
 
 @Service
-public class SearchService {
+public class SearchServiceImpl implements ISearchService {
 
 	private final String ICMS = "ICMS";
 	private final String IPI = "IPI";
@@ -27,14 +27,15 @@ public class SearchService {
 	private TaxRepository taxRepository;
 
 	@Autowired
-	public SearchService(ProductRepository productRepository,
+	public SearchServiceImpl(ProductRepository productRepository,
 			ProductSellingRestrictionsRepository productSellingRestrictionsRepository, TaxRepository taxRepository) {
 		this.productRepository = productRepository;
 		this.productSellingRestrictionsRepository = productSellingRestrictionsRepository;
 		this.taxRepository = taxRepository;
 	}
 
-	public List<ProductResponse> findProducts(Integer clientId, String name) throws ProductNotFoundException {
+	@Override
+	public List<SearchProduct> findProducts(Integer clientId, String name) throws ProductNotFoundException {
 
 		List<Product> products = productRepository.findByName(name);
 
@@ -49,7 +50,8 @@ public class SearchService {
 		Integer icms = getTax(taxes, ICMS);
 		Integer ipi = getTax(taxes, IPI);
 
-		List<ProductResponse> productResponseList = new ArrayList<ProductResponse>();
+		List<SearchProduct> productResponseList = new ArrayList<SearchProduct>();
+
 		List<Integer> restrictedIds = restrictions.stream().map(r -> r.getIdProduto()).collect(Collectors.toList());
 
 		for (Product product : products) {
@@ -63,8 +65,8 @@ public class SearchService {
 		return productResponseList;
 	}
 
-	private ProductResponse createProductResponse(Integer icms, Integer ipi, Product product) {
-		ProductResponse productResponse = new ProductResponse();
+	private SearchProduct createProductResponse(Integer icms, Integer ipi, Product product) {
+		SearchProduct productResponse = new SearchProduct();
 
 		Double price = product.getPrice();
 
@@ -82,7 +84,8 @@ public class SearchService {
 	}
 
 	private Double calculateTax(Double price, double ipi, double icms) {
-		return price + (price * (ipi / 100)) + (price * (icms / 100));
+		Double value = price + (price * (ipi / 100)) + (price * (icms / 100));
+		return (double) Math.round(value * 100) / 100;
 	}
 
 }

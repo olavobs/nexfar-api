@@ -1,6 +1,6 @@
 package com.test.nexfar.entity;
 
-public class Request {
+public class SearchRequest {
 
 	private String name;
 
