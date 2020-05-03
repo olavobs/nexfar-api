@@ -10,5 +10,5 @@ import com.test.nexfar.entity.Product;
 @Repository
 public interface ProductRepository extends MongoRepository<Product, Integer> {
 
-	List<Product> findByName(String name);
+	List<Product> findByNameContaining(String name);
 }

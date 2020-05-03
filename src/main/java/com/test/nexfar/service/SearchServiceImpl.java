@@ -37,7 +37,7 @@ public class SearchServiceImpl implements ISearchService {
 	@Override
 	public List<SearchProduct> findProducts(Integer clientId, String name) throws ProductNotFoundException {
 
-		List<Product> products = productRepository.findByName(name);
+		List<Product> products = productRepository.findByNameContaining(name);
 
 		if (products.isEmpty()) {
 			throw new ProductNotFoundException("Product " + name + "was not found!");
